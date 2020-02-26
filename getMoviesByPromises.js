@@ -18,7 +18,7 @@ function getMovies(title){
             result.forEach( a => {movieTitles.push(...a.titles)});
             log(`Movies list for the title ${title} : ${movieTitles}`);
         }).catch(e => {error(e)});
-    }).catch(e => {error(e)});;
+    }).catch(e => {error(e)});
 };
 
 function getMovieData(title, page = 1){
