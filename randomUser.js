@@ -1,7 +1,7 @@
 var https = require('https');
 var log = console.log;
 var error = console.error;
-const url = 'https://randomuser.me/api/?results=10&seed=abc';
+const url = 'https://randomuser.me/api/?results=1000&seed=abc';
 const getData = function(){
     return new Promise((resolve, reject) => {
         https.get(url, res => {
@@ -13,6 +13,7 @@ const getData = function(){
                 let json = JSON.parse(body);
                 let results = [];
                 let users = json.results;
+                let mappedResult;
                 users.map( a => {
                     results.push({
                         title: a.name.title,
@@ -20,20 +21,22 @@ const getData = function(){
                         email: a.email,
                         gender: a.gender
                     });
-                    results.sort((a,b) => {
-                        if(a.name > b.name)
-                            return 1;
-                        else if(a.name < b.name)
-                            return -1;
-                        else
-                            return 0;    
-                            
+                    
+                    //Sort based on locale
+                    results.sort((a, b) => {
+                        return a.name.localeCompare(b.name, 'en', { sensitivity: 'base' });
                     });
-                    // results.sort((a, b) => {
-                    //     return a.name.localeCompare(b.name, 'en', { sensitivity: 'base' });
-                    // });
+                    
+                    mappedResult = results.reduce((prev, curr) => {
+                        if(prev[curr.name[0]] == undefined){
+                            prev[curr.name[0]] = [];
+                        }
+
+                        prev[curr.name[0]].push(curr);
+                        return prev;
+                   }, []);
                 });
-                resolve(results);
+                resolve(mappedResult);
             }),
             res.on('error', e => {
                 reject(e);
