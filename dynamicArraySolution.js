@@ -10,9 +10,9 @@ fs.readFile('./input.txt', function (err, data) {
     processData(inputString);
 });
 
-function processData(inputString){
-    inputString = inputString.replace(/\s+$/g, '').split('\n');
-    main();    
+function processData(inputString) {
+    inputString = inputString.replace(/\s+$/g, ' ').split('\n');
+    main();
 }
 
 function readLine() {
@@ -28,34 +28,32 @@ function readLine() {
  *  2. 2D_INTEGER_ARRAY queries
  */
 
-function dynamicArray(n, queries) {
+function dynamicArray(N, queries) {
     // Write your code here
+    const seqList = [], result = [];
     let lastAnswer = 0;
-    let seqList = [];
-    let result = [];
 
-    for(let i = 0; i <n ; i++){
+    for (let i = 0; i < N; i++) {
         seqList[i] = [];
     }
 
-    queries.slice(1).forEach( query => {
-        const [q,x,y] = query.split(' ').map(i => parseInt(i, 10));
-        const seq = ((x ^ lastAnswer) % n);
-        switch(q){
-            case 1:
-                if(seqList[seq]){
+    queries
+        .forEach(query => {
+            const [q, x, y] = query.map(Number);
+            const seq = ((x ^ lastAnswer) % N);
+
+            switch (q) {
+                case 1:
                     seqList[seq].push(y);
-                }
-                break;
-            case 2:
-                if(seqList[seq] != undefined){
-                    let size = seqList[seq].length;
-                    lastAnswer = seqList[seq][parseInt(y % size, 10)];
+                    break;
+                case 2:
+                    const size = seqList[seq].length;
+                    const index = y % size;
+                    lastAnswer = seqList[seq][index];
                     result.push(lastAnswer);
-                    break; 
-                }   
-        }
-    });
+                    break;
+            };
+        });
 
     return result;
 }
@@ -67,14 +65,14 @@ function main() {
 
     const firstMultipleInput = data[0];
 
-    const n = parseInt(firstMultipleInput[0], 10);
+    const n = Number(firstMultipleInput[0], 10);
 
-    const q = parseInt(firstMultipleInput[1], 10);
+    const q = Number(firstMultipleInput[1], 10);
 
     let queries = Array(q);
 
     for (let i = 1; i < data.length; i++) {
-        queries.push(data[i]);
+        queries.push(data[i].split(' '));
     }
 
     const result = dynamicArray(n, queries);
